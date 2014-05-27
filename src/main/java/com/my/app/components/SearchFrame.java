@@ -22,11 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 
 import com.my.app.domain.Question;
 import com.my.app.service.QuestionService;
@@ -44,10 +46,36 @@ public class SearchFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JButton btnAdd;
-	private DefaultListModel listModel;	
+	
+	//private DefaultListModel listModel;	
+	private DefaultTableModel model;
 	
     @Autowired
-    QuestionService questionService;	
+    QuestionService questionService;
+    
+    public JTable createTable() {
+    	model = new DefaultTableModel();
+    	model.addColumn("Id");
+    	model.addColumn("Question");
+    	model.addColumn("Edit");
+    	model.addColumn("Delete");
+    	JTable table = new JTable(model){
+    		@Override
+            public Class getColumnClass(int column) {
+                switch (column) {
+                    case 0:
+                        return String.class;
+                    case 1:
+                        return String.class;
+                    case 2:
+                        return JButton.class;
+                    default:
+                        return JButton.class;
+                }
+            }
+    	};
+    	return table;
+    }
 	
 	public SearchFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,18 +119,18 @@ public class SearchFrame extends JFrame {
 
 		contentPane.add(panelBottom, BorderLayout.SOUTH);
 		
-		listModel = new DefaultListModel();
-		JList list = new JList(listModel);
-		list.setLayoutOrientation(JList.VERTICAL);
+/*		listModel = new DefaultListModel();
 		
+		JList list = new JList(listModel);
+		list.setLayoutOrientation(JList.VERTICAL);		
 		list.setVisibleRowCount(-1);
 		
-		JScrollPane listScroller = new JScrollPane(list);
-		listScroller.setPreferredSize(new Dimension(350, 150));
-		
+		JScrollPane scroller = new JScrollPane(list);
+		scroller.setPreferredSize(new Dimension(350, 150));		
 		list.setCellRenderer(new QuestionCellRenderer());
-
-		panelBottom.add(listScroller);
+		panelBottom.add(scroller);*/
+		
+		
 		
 		textField.getDocument().addDocumentListener(new DocumentListener() {			
 			@Override
@@ -131,10 +159,16 @@ public class SearchFrame extends JFrame {
 		setQuestions(questionService.findAllQuestions());
 	}
 
-	public void setQuestions(List<Question> questions) {
+/*	public void setQuestions(List<Question> questions) {
 		this.listModel.clear();
 		for (Question question : questions) {
 			this.listModel.addElement(question);
+		}
+	}*/
+	
+	public void setQuestions(List<Question> questions) {
+		for (Question question : questions) {
+			//this.model.addElement(question);
 		}
 	}
 
