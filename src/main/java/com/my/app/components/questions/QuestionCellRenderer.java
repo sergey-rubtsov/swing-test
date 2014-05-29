@@ -1,4 +1,4 @@
-package com.my.app.components;
+package com.my.app.components.questions;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -14,6 +14,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+import com.my.app.components.EditFrame;
 import com.my.app.domain.Question;
 
 public class QuestionCellRenderer extends JPanel implements ListCellRenderer {

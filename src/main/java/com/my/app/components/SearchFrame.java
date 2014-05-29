@@ -1,35 +1,25 @@
 package com.my.app.components;
 
 import java.awt.BorderLayout;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
-
+import com.my.app.components.questions.QuestionTable;
 import com.my.app.domain.Question;
 import com.my.app.service.QuestionService;
 
@@ -46,36 +36,10 @@ public class SearchFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JButton btnAdd;
-	
-	//private DefaultListModel listModel;	
-	private DefaultTableModel model;
+	private QuestionTable table;
 	
     @Autowired
     QuestionService questionService;
-    
-    public JTable createTable() {
-    	model = new DefaultTableModel();
-    	model.addColumn("Id");
-    	model.addColumn("Question");
-    	model.addColumn("Edit");
-    	model.addColumn("Delete");
-    	JTable table = new JTable(model){
-    		@Override
-            public Class getColumnClass(int column) {
-                switch (column) {
-                    case 0:
-                        return String.class;
-                    case 1:
-                        return String.class;
-                    case 2:
-                        return JButton.class;
-                    default:
-                        return JButton.class;
-                }
-            }
-    	};
-    	return table;
-    }
 	
 	public SearchFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -118,6 +82,10 @@ public class SearchFrame extends JFrame {
 		JPanel panelBottom = new JPanel();
 
 		contentPane.add(panelBottom, BorderLayout.SOUTH);
+		table = new QuestionTable();
+		JScrollPane scroller = new JScrollPane(table);
+		scroller.setPreferredSize(new Dimension(400, 180));	
+		panelBottom.add(scroller);
 		
 /*		listModel = new DefaultListModel();
 		
@@ -128,9 +96,7 @@ public class SearchFrame extends JFrame {
 		JScrollPane scroller = new JScrollPane(list);
 		scroller.setPreferredSize(new Dimension(350, 150));		
 		list.setCellRenderer(new QuestionCellRenderer());
-		panelBottom.add(scroller);*/
-		
-		
+		panelBottom.add(scroller);*/		
 		
 		textField.getDocument().addDocumentListener(new DocumentListener() {			
 			@Override
@@ -158,21 +124,15 @@ public class SearchFrame extends JFrame {
 		questionService.saveQuestion(new Question("Test4"));
 		setQuestions(questionService.findAllQuestions());
 	}
-
-/*	public void setQuestions(List<Question> questions) {
-		this.listModel.clear();
-		for (Question question : questions) {
-			this.listModel.addElement(question);
-		}
-	}*/
 	
 	public void setQuestions(List<Question> questions) {
-		for (Question question : questions) {
-			//this.model.addElement(question);
+		for (final Question question : questions) {
+			Object[] row = {question.getQuestion(), question, question};
+			this.table.getModel().addRow(row);   
 		}
 	}
 
-	private void onChangeValue() {
+	private void onChangeValue() {		
 		String keywords = textField.getText();
 		List<Question> q = questionService.searchQuestion(keywords);
 		if (q.size() > 0) {
