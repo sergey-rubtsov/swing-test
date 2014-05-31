@@ -2,25 +2,16 @@ package com.my.app.components.questions;
 
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import com.my.app.domain.Answer;
 import com.my.app.domain.Question;
 
-public class QuestionColumn implements
-TableCellRenderer {
+public class QuestionColumn implements TableCellRenderer {
 
-	private static final long serialVersionUID = -14429936538178095L;
-	
 	private Question question;
 	private JList list;
 	private DefaultListModel listModel;

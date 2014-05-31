@@ -1,13 +1,10 @@
 package com.my.app.components.questions;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -33,7 +30,6 @@ public class QuestionTable extends JTable implements ActionListener {
 	AnswerService answerService;
 
 	private static final long serialVersionUID = 1194556790037959407L;
-	//private QuestionsTableModel model;
 	DefaultTableModel model;
 	private List<Question> questions;
 	protected static final String DELETE = "d";
@@ -44,14 +40,14 @@ public class QuestionTable extends JTable implements ActionListener {
 	}
 
 	public void createTable() {
-		model = new QuestionsTableModel() {
+		model = new DefaultTableModel() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int row, int col) {
 				if (col == 0)
 					return false;
-				return true;				
+				return true;
 			}
 		};
 
@@ -82,14 +78,9 @@ public class QuestionTable extends JTable implements ActionListener {
 		column2.setMinWidth(24);
 		column2.setMaxWidth(24);
 		column2.setPreferredWidth(24);
-
-		initDB();
 	}
 
-/*	public QuestionsTableModel getModel() {
-		return model;
-	}*/
-	
+	@Override
 	public DefaultTableModel getModel() {
 		return model;
 	}
@@ -114,7 +105,6 @@ public class QuestionTable extends JTable implements ActionListener {
 		for (final Question question : questions) {
 			Object[] row = { question, question, question };
 			this.getModel().addRow(row);
-			//this.getModel().addRow(question.getId(), row);
 		}
 		this.updateRowHeights();
 	}
@@ -124,9 +114,7 @@ public class QuestionTable extends JTable implements ActionListener {
 		if (DELETE.equals(e.getActionCommand())) {
 			DeleteButton button = (DeleteColumn.DeleteButton) e.getSource();
 			questionService.deleteQuestion(button.getQuestion());
-			//getModel().removeRow(button.getQuestion().getId());
 		}
-		//refreshTable();
 	}
 
 	private void initDB() {
@@ -154,7 +142,8 @@ public class QuestionTable extends JTable implements ActionListener {
 			setQuestions(questions);
 		}
 	}
-
+	
+	@Deprecated
 	private void refreshTable() {
 		for (int i = 0; i < model.getRowCount(); i++) {
 			model.removeRow(0);

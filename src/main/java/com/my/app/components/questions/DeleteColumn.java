@@ -13,12 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.my.app.domain.Question;
-import com.my.app.service.QuestionService;
 
 public class DeleteColumn extends AbstractCellEditor implements
 		TableCellEditor, ActionListener, TableCellRenderer {
@@ -32,9 +27,10 @@ public class DeleteColumn extends AbstractCellEditor implements
 	private Question question = null;
 
 	public class DeleteButton extends JButton {
-		private Question question;
 
-		private int row;
+		private static final long serialVersionUID = -7455470258663698891L;
+
+		private Question question;
 
 		protected static final String DELETE = "d";
 
@@ -49,7 +45,6 @@ public class DeleteColumn extends AbstractCellEditor implements
 			setFont(new Font("Consolas", Font.PLAIN, 12));
 			setOpaque(true);
 			setActionCommand(DELETE);
-			// addActionListener(this);
 			setBorderPainted(false);
 			setBorder(null);
 		}
@@ -68,12 +63,6 @@ public class DeleteColumn extends AbstractCellEditor implements
 		button = new DeleteButton(DELETE);
 		button.addActionListener(table);
 		button.addActionListener(this);
-		/*
-		 * button = new JButton(DELETE); button.setFont(new Font("Consolas",
-		 * Font.PLAIN, 12)); button.setOpaque(true);
-		 * button.setActionCommand(DELETE); button.addActionListener(this);
-		 * button.setBorderPainted(false); button.setBorder(null);
-		 */
 	}
 
 	@Override
@@ -86,9 +75,6 @@ public class DeleteColumn extends AbstractCellEditor implements
 		if (DELETE.equals(e.getActionCommand())) {
 			button.setBackground(Color.cyan);
 			try {
-				// int x = qTable.convertColumnIndexToModel(row);
-				// int y = qTable.convertColumnIndexToView(row);
-				//table.getModel().removeRow(row);
 				rowDelete(row);
 			} catch (Exception tableEx) {
 			}
@@ -98,9 +84,9 @@ public class DeleteColumn extends AbstractCellEditor implements
 
 	private void rowDelete(int row) {
 		if (table.getCellEditor() != null)
-			((TableCellEditor) table.getCellEditor()).stopCellEditing();
+			table.getCellEditor().stopCellEditing();
 		if ((row >= 0) && (table.getRowCount() > 1)) {
-			DefaultTableModel tm = (DefaultTableModel) table.getModel();
+			DefaultTableModel tm = table.getModel();
 			tm.removeRow(row);
 			table.repaint();
 		}

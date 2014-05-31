@@ -1,7 +1,6 @@
 package com.my.app.components;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,14 +16,30 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.my.app.components.answers.AnswerCellRenderer;
 import com.my.app.domain.Answer;
 import com.my.app.domain.Question;
+import com.my.app.service.AnswerService;
+import com.my.app.service.QuestionService;
 
+@Configurable(preConstruction = true)
+@Transactional
 public class EditFrame extends JFrame {
+	
+	@Autowired
+	QuestionService questionService;
+
+	@Autowired
+	AnswerService answerService;
 	
 	private static final long serialVersionUID = 6218065377745508692L;
 	private Question question;
@@ -45,7 +60,7 @@ public class EditFrame extends JFrame {
 	}
 	
 	private EditFrame() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 460, 340);
 		setContentPane(createPanel());
 	}
@@ -62,8 +77,9 @@ public class EditFrame extends JFrame {
 		editorQuestion.setBounds(10, 29, 344, 62);
 		panel.add(editorQuestion);
 		
-		listModel = new DefaultListModel();
+		listModel = new DefaultListModel();		
 		JList list = new JList(listModel);
+		list.setCellRenderer(new AnswerCellRenderer(this));
 		list.setFont(new Font("Consolas", Font.PLAIN, 11));
 		list.setBounds(10, 163, 344, 126);
 		panel.add(list);
@@ -76,7 +92,14 @@ public class EditFrame extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.setFont(new Font("Consolas", Font.PLAIN, 11));
 		btnSave.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				Question question = getQuestion();
+				questionService.saveQuestion(question);
+				//TODO: check:
+				for (Answer answer : question.getAnswers()) answerService.saveAnswer(answer);				
+				setVisible(false);
+				dispose();
 			}
 		});
 		btnSave.setBounds(364, 29, 76, 62);
@@ -85,6 +108,7 @@ public class EditFrame extends JFrame {
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.setFont(new Font("Consolas", Font.PLAIN, 11));
 		btnDelete.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
@@ -94,6 +118,7 @@ public class EditFrame extends JFrame {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.setFont(new Font("Consolas", Font.PLAIN, 11));
 		btnCancel.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {				
 				setVisible(false);
 				dispose();
@@ -130,7 +155,7 @@ public class EditFrame extends JFrame {
 		panel.add(lblVerity);
 		
 		JSpinner spinner = new JSpinner();
-		spinnerModel = new SpinnerNumberModel(50, 0, 100, 10);
+		spinnerModel = new SpinnerNumberModel(50, 0, 100, 25);
 		spinner.setModel(spinnerModel);
 		spinner.setBounds(314, 118, 40, 34);		
 		panel.add(spinner);
@@ -138,9 +163,11 @@ public class EditFrame extends JFrame {
 		btnAdd = new JButton("Add");
 		btnAdd.setFont(new Font("Consolas", Font.PLAIN, 11));
 		btnAdd.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Question question = getQuestion();
 				question.addAnswer(new Answer(editorAnswer.getText(), (Integer)spinnerModel.getValue()));
+				setAnswers(question.getAnswers());
 			}
 		});
 		btnAdd.setBounds(364, 118, 76, 41);

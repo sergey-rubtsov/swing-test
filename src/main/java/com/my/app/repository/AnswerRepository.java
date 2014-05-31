@@ -1,8 +1,6 @@
 package com.my.app.repository;
 
 import com.my.app.domain.Answer;
-import com.my.app.domain.Question;
-
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
