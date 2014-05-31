@@ -19,8 +19,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+
 import com.my.app.components.questions.QuestionTable;
+import com.my.app.domain.Answer;
 import com.my.app.domain.Question;
+import com.my.app.service.AnswerService;
 import com.my.app.service.QuestionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Configurable(preConstruction=true)
 @Transactional
-public class SearchFrame extends JFrame {
+public class SearchFrame extends JFrame implements TableModelListener {
 
 	private static final long serialVersionUID = 595008560407711863L;
 	
@@ -40,6 +45,9 @@ public class SearchFrame extends JFrame {
 	
     @Autowired
     QuestionService questionService;
+    
+    @Autowired
+    AnswerService answerService;
 	
 	public SearchFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,20 +91,10 @@ public class SearchFrame extends JFrame {
 
 		contentPane.add(panelBottom, BorderLayout.SOUTH);
 		table = new QuestionTable();
+		table.getModel().addTableModelListener(this);
 		JScrollPane scroller = new JScrollPane(table);
 		scroller.setPreferredSize(new Dimension(400, 180));	
 		panelBottom.add(scroller);
-		
-/*		listModel = new DefaultListModel();
-		
-		JList list = new JList(listModel);
-		list.setLayoutOrientation(JList.VERTICAL);		
-		list.setVisibleRowCount(-1);
-		
-		JScrollPane scroller = new JScrollPane(list);
-		scroller.setPreferredSize(new Dimension(350, 150));		
-		list.setCellRenderer(new QuestionCellRenderer());
-		panelBottom.add(scroller);*/		
 		
 		textField.getDocument().addDocumentListener(new DocumentListener() {			
 			@Override
@@ -114,31 +112,38 @@ public class SearchFrame extends JFrame {
 				onChangeValue();
 			}
 		});
-		initDB();
 	}
 	
 	private void initDB() {
-		questionService.saveQuestion(new Question("Test1"));
+		Question q1 = new Question("Test1");
+		Answer answer = new Answer("YESS", 20);
+		q1.addAnswer(answer);
+		questionService.saveQuestion(q1);
+		answerService.saveAnswer(answer);
 		questionService.saveQuestion(new Question("Test2"));
 		questionService.saveQuestion(new Question("Test3"));
 		questionService.saveQuestion(new Question("Test4"));
-		setQuestions(questionService.findAllQuestions());
-	}
-	
-	public void setQuestions(List<Question> questions) {
-		for (final Question question : questions) {
-			Object[] row = {question.getQuestion(), question, question};
-			this.table.getModel().addRow(row);   
-		}
+		this.table.setQuestions(questionService.findAllQuestions());
 	}
 
-	private void onChangeValue() {		
-		String keywords = textField.getText();
+	private void onChangeValue() {
+		table.search(textField.getText());
+		if (table.getModel().getRowCount() == 0) {
+			btnAdd.setEnabled(true);
+		}
+/*		String keywords = textField.getText();
 		List<Question> q = questionService.searchQuestion(keywords);
 		if (q.size() > 0) {
-			setQuestions(q);
+			this.table.setQuestions(q);
 		} else {
 			btnAdd.setEnabled(true);
-		}		
+		}*/		
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e) {
+/*		if (e.getType() == TableModelEvent.DELETE) {
+			onChangeValue();
+		}*/
 	}
 }
