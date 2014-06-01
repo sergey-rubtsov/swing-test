@@ -1,6 +1,7 @@
 package com.my.app.components;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -43,11 +45,13 @@ public class EditFrame extends JFrame {
 	
 	private static final long serialVersionUID = 6218065377745508692L;
 	private Question question;
+	private Answer focusedAnswer;
 	private JEditorPane editorQuestion;
 	private JEditorPane editorAnswer;
 	private DefaultListModel listModel;
 	private SpinnerNumberModel spinnerModel;
 	private JButton btnAdd;
+	private JButton btnDelete;
 	
 	public EditFrame(String text) {
 		this();
@@ -105,11 +109,30 @@ public class EditFrame extends JFrame {
 		btnSave.setBounds(364, 29, 76, 62);
 		panel.add(btnSave);
 		
-		JButton btnDelete = new JButton("Delete");
+		btnDelete = new JButton("Delete");
 		btnDelete.setFont(new Font("Consolas", Font.PLAIN, 11));
 		btnDelete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				JLabel warning = new JLabel();
+				warning.setFont(new Font("Consolas", Font.PLAIN, 14));
+				warning.setForeground(Color.RED);
+				if (getFocusedAnswer() == null) {
+					warning.setText("Do you want delete this QUESTION?");
+					int dialogResult = JOptionPane.showConfirmDialog (null, warning, "Question deleting.", JOptionPane.YES_NO_OPTION);
+					if (dialogResult == JOptionPane.YES_OPTION){
+						if (question != null) questionService.deleteQuestion(getQuestion());
+						setVisible(false);
+						dispose();
+					}
+				} else {
+					warning.setText("Do you want delete this ANSWER?");
+					int dialogResult = JOptionPane.showConfirmDialog (null, warning, "Answer deleting.", JOptionPane.YES_NO_OPTION);
+					if (dialogResult == JOptionPane.YES_OPTION){
+						answerService.deleteAnswer(getFocusedAnswer());
+						setFocusedAnswer(null);
+					}					
+				}
 			}
 		});
 		btnDelete.setBounds(364, 174, 76, 52);
@@ -214,5 +237,13 @@ public class EditFrame extends JFrame {
 		for (Answer answer : answers) {
 			this.listModel.addElement(answer);
 		}
+	}
+
+	public void setFocusedAnswer(Answer a) {
+		focusedAnswer = a;		
+	}
+	
+	public Answer getFocusedAnswer() {
+		return focusedAnswer;
 	}
 }

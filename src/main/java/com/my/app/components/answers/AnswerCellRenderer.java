@@ -35,6 +35,7 @@ public class AnswerCellRenderer extends JLabel implements ListCellRenderer {
 		if (cellHasFocus) {
 			setBackground(Color.BLACK);
 			setForeground(Color.ORANGE);
+			frame.setFocusedAnswer(a);
 		}
 		return this;
 	}

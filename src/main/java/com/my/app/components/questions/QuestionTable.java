@@ -117,18 +117,6 @@ public class QuestionTable extends JTable implements ActionListener {
 		}
 	}
 
-	private void initDB() {
-		Question q1 = new Question("Test1");
-		Answer answer = new Answer("YESS", 20);
-		q1.addAnswer(answer);
-		questionService.saveQuestion(q1);
-		answerService.saveAnswer(answer);
-		questionService.saveQuestion(new Question("Test2"));
-		questionService.saveQuestion(new Question("Test3"));
-		questionService.saveQuestion(new Question("Test4"));
-		search();
-	}
-
 	public void search() {
 		questions = questionService.findAllQuestions();
 		if (questions.size() > 0) {

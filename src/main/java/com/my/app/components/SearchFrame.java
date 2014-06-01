@@ -32,13 +32,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Configurable(preConstruction=true)
 @Transactional
-public class SearchFrame extends JFrame implements TableModelListener {
+public class SearchFrame extends JFrame {
 
 	private static final long serialVersionUID = 595008560407711863L;
 	
 	private JPanel contentPane;
 	private JTextField textField;
 	private JButton btnAdd;
+	private JButton btnShow;
 	private QuestionTable table;
 	
     @Autowired
@@ -73,7 +74,7 @@ public class SearchFrame extends JFrame implements TableModelListener {
 		textField.setFont(new Font("Consolas", Font.PLAIN, 14));
 		textField.setHorizontalAlignment(SwingConstants.LEFT);
 		panelTop.add(textField);
-		textField.setColumns(40);
+		textField.setColumns(36);
 		
 		btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {			
@@ -85,11 +86,19 @@ public class SearchFrame extends JFrame implements TableModelListener {
 		});
 		panelTop.add(btnAdd);
 		
+		btnShow = new JButton("All");
+		btnShow.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				table.setQuestions(questionService.findAllQuestions());
+			}
+		});
+		panelTop.add(btnShow);		
+		
 		JPanel panelBottom = new JPanel();
 
 		contentPane.add(panelBottom, BorderLayout.SOUTH);
 		table = new QuestionTable();
-		table.getModel().addTableModelListener(this);
 		JScrollPane scroller = new JScrollPane(table);
 		scroller.setPreferredSize(new Dimension(400, 180));	
 		panelBottom.add(scroller);
@@ -112,36 +121,10 @@ public class SearchFrame extends JFrame implements TableModelListener {
 		});
 	}
 	
-	private void initDB() {
-		Question q1 = new Question("Test1");
-		Answer answer = new Answer("YESS", 20);
-		q1.addAnswer(answer);
-		questionService.saveQuestion(q1);
-		answerService.saveAnswer(answer);
-		questionService.saveQuestion(new Question("Test2"));
-		questionService.saveQuestion(new Question("Test3"));
-		questionService.saveQuestion(new Question("Test4"));
-		this.table.setQuestions(questionService.findAllQuestions());
-	}
-
 	private void onChangeValue() {
 		table.search(textField.getText());
 		if (table.getModel().getRowCount() == 0) {
 			btnAdd.setEnabled(true);
-		}
-/*		String keywords = textField.getText();
-		List<Question> q = questionService.searchQuestion(keywords);
-		if (q.size() > 0) {
-			this.table.setQuestions(q);
-		} else {
-			btnAdd.setEnabled(true);
-		}*/		
-	}
-
-	@Override
-	public void tableChanged(TableModelEvent e) {
-/*		if (e.getType() == TableModelEvent.DELETE) {
-			onChangeValue();
-		}*/
+		}	
 	}
 }
