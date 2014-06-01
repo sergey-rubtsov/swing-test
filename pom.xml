@@ -5,7 +5,7 @@
 	<groupId>com.my.app</groupId>
 	<artifactId>swing-test</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.0.BUILD-SNAPSHOT</version>
+	<version>0.1</version>
 	<name>swing-test</name>
 	<properties>
 		<java.version>1.6</java.version>
@@ -301,11 +301,29 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
 			</plugin>
-			<!-- setup jar manifest to executable with dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>com.my.app.App</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -317,7 +335,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.my.app.Main</mainClass>
+							<mainClass>com.my.app.App</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -330,26 +348,31 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
 			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<classpathLayoutType>repository</classpathLayoutType>
-
-							<!-- NOTE: Deprecated in version 2.4. Use 'classpathLayoutType' instead. 
-								<classpathMavenRepositoryLayout>true</classpathMavenRepositoryLayout> -->
-						</manifest>
-					</archive>
-				</configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>install</phase>
+						<!-- <goals> <goal>copy-dependencies</goal> </goals> -->
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
-
-
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> 
+				</plugin> setup jar manifest to executable with dependencies <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-assembly-plugin</artifactId> <version>2.2.1</version> <configuration> 
+				<descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> </descriptorRefs> 
+				<archive> <manifest> <addClasspath>true</addClasspath> <mainClass>com.my.app.App</mainClass> 
+				</manifest> </archive> </configuration> <executions> <execution> <phase>package</phase> 
+				<goals> <goal>single</goal> </goals> </execution> </executions> </plugin> 
+				<plugin> <artifactId>maven-jar-plugin</artifactId> <version>2.3</version> 
+				<configuration> <archive> <manifest> <addClasspath>true</addClasspath> <classpathPrefix>lib/</classpathPrefix> 
+				<classpathLayoutType>repository</classpathLayoutType> </manifest> </archive> 
+				</configuration> </plugin> -->
 
 		</plugins>
 	</build>

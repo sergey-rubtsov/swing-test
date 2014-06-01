@@ -117,14 +117,15 @@ public class QuestionTable extends JTable implements ActionListener {
 		}
 	}
 
-	public void search() {
+/*	public void search() {
 		questions = questionService.findAllQuestions();
 		if (questions.size() > 0) {
 			setQuestions(questions);
 		}
-	}
+	}*/
 
 	public void search(String keyword) {
+		refreshTable();
 		questions = questionService.searchQuestion(keyword);
 		if (questions.size() > 0) {
 			setQuestions(questions);
@@ -136,6 +137,6 @@ public class QuestionTable extends JTable implements ActionListener {
 		for (int i = 0; i < model.getRowCount(); i++) {
 			model.removeRow(0);
 		}
-		search();
+		//search();
 	}
 }

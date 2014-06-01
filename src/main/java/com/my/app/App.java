@@ -12,8 +12,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.my.app.components.SearchFrame;
 
-@Configurable(preConstruction=true)
-public class Main extends Application {
+@Configurable
+public class App extends Application {
 
 	public static void main(String[] args) {
 		try {
@@ -24,7 +24,7 @@ public class Main extends Application {
 			System.exit(1);
 		}
 
-		Application.launch(Main.class, args);
+		Application.launch(App.class, args);
 
 		final JFrame frame = new SearchFrame();
 		frame.addWindowListener(new WindowAdapter() {
