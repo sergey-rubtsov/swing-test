@@ -79,6 +79,14 @@ public class QuestionTable extends JTable implements ActionListener {
 		column2.setMaxWidth(24);
 		column2.setPreferredWidth(24);
 	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (DELETE.equals(e.getActionCommand())) {
+			DeleteButton button = (DeleteColumn.DeleteButton) e.getSource();
+			questionService.deleteQuestion(button.getQuestion());
+		}
+	}
 
 	@Override
 	public DefaultTableModel getModel() {
@@ -101,7 +109,8 @@ public class QuestionTable extends JTable implements ActionListener {
 		}
 	}
 
-	public void setQuestions(List<Question> questions) {
+	public void setQuestions(List<Question> questions) {		
+		clearTable();		
 		for (final Question question : questions) {
 			Object[] row = { question, question, question };
 			this.getModel().addRow(row);
@@ -109,34 +118,23 @@ public class QuestionTable extends JTable implements ActionListener {
 		this.updateRowHeights();
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (DELETE.equals(e.getActionCommand())) {
-			DeleteButton button = (DeleteColumn.DeleteButton) e.getSource();
-			questionService.deleteQuestion(button.getQuestion());
-		}
-	}
-
-/*	public void search() {
-		questions = questionService.findAllQuestions();
-		if (questions.size() > 0) {
-			setQuestions(questions);
-		}
-	}*/
-
-	public void search(String keyword) {
-		refreshTable();
+	public void search(String keyword) {		
 		questions = questionService.searchQuestion(keyword);
 		if (questions.size() > 0) {
 			setQuestions(questions);
-		}
+		} else clearTable();
 	}
 	
-	@Deprecated
-	private void refreshTable() {
-		for (int i = 0; i < model.getRowCount(); i++) {
+	private void clearTable() {
+		while (model.getRowCount() > 0) {
+			int watchDog = model.getRowCount();
 			model.removeRow(0);
+			if (watchDog == model.getRowCount()) throw new RuntimeException("Something goes wrong with the table!");
 		}
-		//search();
+	}
+
+	public void showAll() {
+		questions = questionService.findAllQuestions();
+		setQuestions(questions);		
 	}
 }

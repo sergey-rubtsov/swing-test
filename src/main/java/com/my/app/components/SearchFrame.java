@@ -58,10 +58,22 @@ public class SearchFrame extends JFrame {
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 		
-		JMenuItem mntmImport = new JMenuItem("Import");
+		JMenuItem mntmImport = new JMenuItem("Import db");
+		mntmImport.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				importDB();
+			}
+		});
 		mnFile.add(mntmImport);
 		
-		JMenuItem mntmExport = new JMenuItem("Export");
+		JMenuItem mntmExport = new JMenuItem("Export db");
+		mntmExport.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				exportDB();
+			}
+		});
 		mnFile.add(mntmExport);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -90,7 +102,7 @@ public class SearchFrame extends JFrame {
 		btnShow.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				table.setQuestions(questionService.findAllQuestions());
+				table.showAll();				
 			}
 		});
 		panelTop.add(btnShow);		
@@ -121,10 +133,15 @@ public class SearchFrame extends JFrame {
 		});
 	}
 	
+	private void exportDB() {
+		
+	}
+	
+	private void importDB() {
+		
+	}
+	
 	private void onChangeValue() {
-		table.search(textField.getText());
-		if (table.getModel().getRowCount() == 0) {
-			btnAdd.setEnabled(true);
-		}	
+		table.search(textField.getText());	
 	}
 }

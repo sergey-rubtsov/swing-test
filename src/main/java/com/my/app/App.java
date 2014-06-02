@@ -12,7 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.my.app.components.SearchFrame;
 
-@Configurable
+@Configurable(preConstruction = true)
 public class App extends Application {
 
 	public static void main(String[] args) {
