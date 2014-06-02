@@ -33,10 +33,6 @@ public class Question implements Serializable {
     public Question() {
     }
 
-    public Question(String question) {
-        this.question = question;
-    }
-
     public String getId() {
         return id;
     }

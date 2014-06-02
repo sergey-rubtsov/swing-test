@@ -189,7 +189,10 @@ public class EditFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Question question = getQuestion();
-				question.addAnswer(new Answer(editorAnswer.getText(), (Integer)spinnerModel.getValue()));
+				Answer a = new Answer();
+				a.setAnswer(editorAnswer.getText());
+				a.setTruth((Integer)spinnerModel.getValue());
+				question.addAnswer(a);
 				setAnswers(question.getAnswers());
 			}
 		});
@@ -220,7 +223,8 @@ public class EditFrame extends JFrame {
 	}	
 
 	public Question createNewQuestion(String text) {
-		this.question = new Question(text);		
+		this.question = new Question();
+		question.setQuestion(text);
 		return question;		
 	}
 	

@@ -35,11 +35,6 @@ public class Answer implements Serializable {
     	
     }
     
-    public Answer(String answer, int truth) {
-    	this.answer = answer;
-    	this.truth = truth;
-    }
-
     public String getId() {
         return id;
     }
