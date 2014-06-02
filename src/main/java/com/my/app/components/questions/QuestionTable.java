@@ -85,6 +85,7 @@ public class QuestionTable extends JTable implements ActionListener {
 		if (DELETE.equals(e.getActionCommand())) {
 			DeleteButton button = (DeleteColumn.DeleteButton) e.getSource();
 			questionService.deleteQuestion(button.getQuestion());
+			deleteQuestionFromTable(button.getQuestion());
 		}
 	}
 
@@ -131,6 +132,12 @@ public class QuestionTable extends JTable implements ActionListener {
 			model.removeRow(0);
 			if (watchDog == model.getRowCount()) throw new RuntimeException("Something goes wrong with the table!");
 		}
+	}
+	
+	public void deleteQuestionFromTable(Question q) {
+		questions.remove(q);
+		clearTable();
+		setQuestions(questions);
 	}
 
 	public void showAll() {
