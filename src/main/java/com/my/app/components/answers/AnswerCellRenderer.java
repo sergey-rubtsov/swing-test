@@ -37,6 +37,9 @@ public class AnswerCellRenderer extends JLabel implements ListCellRenderer {
 			setForeground(Color.ORANGE);
 			frame.setFocusedAnswer(a);
 		}
+		if (a.getAnswer().length() > 150) {
+			setToolTipText(a.getAnswer());
+		}		
 		return this;
 	}
 	

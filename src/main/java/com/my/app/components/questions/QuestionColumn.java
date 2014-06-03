@@ -30,10 +30,14 @@ public class QuestionColumn implements TableCellRenderer {
 		listModel = new DefaultListModel();
 		list = new JList(listModel);
 		list.setFont(new Font("Consolas", Font.PLAIN, 12));
-		listModel.addElement(question.getQuestion());
+		list.setCellRenderer(new QuestionsRenderer());
+		listModel.addElement(question);
 		for (Answer answer : question.getAnswers()) {
-			listModel.addElement(answer.getAnswer());
+			listModel.addElement(answer);
 		}
+		if (question.getQuestion().length() > 80) {
+			list.setToolTipText(question.getQuestion());
+		}	
 		return list;
 	}
 }
