@@ -29,12 +29,13 @@ public class AnswerCellRenderer extends JLabel implements ListCellRenderer {
 		setText(a.getAnswer());		
 		setForeground(getColor(a.getTruth()));
 		if (isSelected) {
-			setBackground(Color.CYAN);
-			setForeground(Color.BLUE);
+			setBackground(Color.RED);
+			setForeground(Color.BLACK);
+			frame.setFocusedAnswer(a);
 		}
 		if (cellHasFocus) {
-			setBackground(Color.BLACK);
-			setForeground(Color.ORANGE);
+			setBackground(Color.RED);
+			setForeground(Color.BLACK);
 			frame.setFocusedAnswer(a);
 		}
 		if (a.getAnswer().length() > 150) {

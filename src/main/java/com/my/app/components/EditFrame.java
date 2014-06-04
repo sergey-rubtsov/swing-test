@@ -130,6 +130,7 @@ public class EditFrame extends JFrame {
 					int dialogResult = JOptionPane.showConfirmDialog (null, warning, "Answer deleting.", JOptionPane.YES_NO_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION){
 						answerService.deleteAnswer(getFocusedAnswer());
+						deleteFocusedAnswer();
 						setFocusedAnswer(null);
 					}					
 				}
@@ -178,7 +179,7 @@ public class EditFrame extends JFrame {
 		panel.add(lblVerity);
 		
 		JSpinner spinner = new JSpinner();
-		spinnerModel = new SpinnerNumberModel(50, 0, 100, 25);
+		spinnerModel = new SpinnerNumberModel(100, 0, 100, 25);
 		spinner.setModel(spinnerModel);
 		spinner.setBounds(314, 118, 40, 34);		
 		panel.add(spinner);
@@ -245,6 +246,10 @@ public class EditFrame extends JFrame {
 
 	public void setFocusedAnswer(Answer a) {
 		focusedAnswer = a;		
+	}
+	
+	public void deleteFocusedAnswer() {
+		this.listModel.removeElement(getFocusedAnswer());
 	}
 	
 	public Answer getFocusedAnswer() {

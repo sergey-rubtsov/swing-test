@@ -24,7 +24,7 @@ public class Question implements Serializable {
     public String id;
 
     @NotNull
-    @Size(min = 0)
+    @Size(min = 0, max = 10000)
     private String question = "";
 
     @OneToMany(mappedBy="question", orphanRemoval=true, fetch = FetchType.EAGER)

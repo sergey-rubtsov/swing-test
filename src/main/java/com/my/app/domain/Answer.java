@@ -22,7 +22,7 @@ public class Answer implements Serializable {
     public String id;
 
     @NotNull
-    @Size(min = 1)
+    @Size(min = 1, max = 10000)
     private String answer = "";
 
     @ManyToOne(fetch= FetchType.LAZY)
