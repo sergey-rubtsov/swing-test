@@ -195,6 +195,7 @@ public class EditFrame extends JFrame {
 				a.setTruth((Integer)spinnerModel.getValue());
 				question.addAnswer(a);
 				setAnswers(question.getAnswers());
+				editorAnswer.setText("");
 			}
 		});
 		btnAdd.setBounds(364, 118, 76, 41);

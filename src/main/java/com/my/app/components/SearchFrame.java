@@ -40,6 +40,7 @@ public class SearchFrame extends JFrame {
 	private JTextField textField;
 	private JButton btnAdd;
 	private JButton btnShow;
+	private JButton btnClear;
 	private QuestionTable table;
 	
     @Autowired
@@ -50,7 +51,7 @@ public class SearchFrame extends JFrame {
 	
 	public SearchFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 540, 380);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -86,17 +87,28 @@ public class SearchFrame extends JFrame {
 		textField.setFont(new Font("Consolas", Font.PLAIN, 14));
 		textField.setHorizontalAlignment(SwingConstants.LEFT);
 		panelTop.add(textField);
-		textField.setColumns(36);
+		textField.setColumns(40);
+		textField.setEditable(true);
 		
 		btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				EditFrame edit = new EditFrame(textField.getText());
+				textField.setText("");
 				edit.setVisible(true);
 			}
 		});
 		panelTop.add(btnAdd);
+		
+		btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textField.setText("");			
+			}
+		});
+		panelTop.add(btnClear);		
 		
 		btnShow = new JButton("All");
 		btnShow.addActionListener(new ActionListener() {			
@@ -112,7 +124,7 @@ public class SearchFrame extends JFrame {
 		contentPane.add(panelBottom, BorderLayout.SOUTH);
 		table = new QuestionTable();
 		JScrollPane scroller = new JScrollPane(table);
-		scroller.setPreferredSize(new Dimension(400, 180));	
+		scroller.setPreferredSize(new Dimension(520, 260));	
 		panelBottom.add(scroller);
 		
 		textField.getDocument().addDocumentListener(new DocumentListener() {			
