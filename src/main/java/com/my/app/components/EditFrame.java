@@ -2,6 +2,7 @@ package com.my.app.components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
@@ -74,12 +77,13 @@ public class EditFrame extends JFrame {
 		JLabel lblQuestion = new JLabel("Question");
 		lblQuestion.setFont(new Font("Consolas", Font.PLAIN, 11));
 		lblQuestion.setBounds(10, 11, 64, 14);
-		panel.add(lblQuestion);
+		panel.add(lblQuestion);		
 		
 		editorQuestion = new JEditorPane();
-		editorQuestion.setFont(new Font("Consolas", Font.PLAIN, 11));
-		editorQuestion.setBounds(10, 29, 344, 62);
-		panel.add(editorQuestion);
+		editorQuestion.setFont(new Font("Consolas", Font.PLAIN, 11));		
+		JScrollPane qScroller = new JScrollPane(editorQuestion);
+		qScroller.setBounds(10, 29, 344, 62);
+		panel.add(qScroller);
 		
 		listModel = new DefaultListModel();		
 		JList list = new JList(listModel);
@@ -99,6 +103,7 @@ public class EditFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Question question = getQuestion();
+				if (question.getQuestion() != editorQuestion.getText()) question.setQuestion(editorQuestion.getText());
 				questionService.saveQuestion(question);
 				//TODO: check:
 				for (Answer answer : question.getAnswers()) answerService.saveAnswer(answer);				
@@ -169,9 +174,15 @@ public class EditFrame extends JFrame {
 			public void changedUpdate(DocumentEvent e) {
 				onChangeValue();
 			}
-		}); 
-		editorAnswer.setBounds(10, 118, 302, 34);
-		panel.add(editorAnswer);
+		});
+		
+		//editorAnswer.setBounds(10, 118, 302, 34);
+		//panel.add(editorAnswer);
+		
+	
+		JScrollPane aScroller = new JScrollPane(editorAnswer, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		aScroller.setBounds(10, 118, 302, 34);
+		panel.add(aScroller);
 		
 		JLabel lblVerity = new JLabel("Verity");
 		lblVerity.setFont(new Font("Consolas", Font.PLAIN, 11));
