@@ -13,60 +13,42 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import com.my.app.components.EditFrame;
+import com.my.app.components.questions.DeleteColumn.DeleteButton;
 import com.my.app.domain.Question;
 
-public class EditColumn extends AbstractCellEditor implements TableCellEditor, ActionListener, TableCellRenderer {
+public class EditColumn extends AbstractCellEditor implements TableCellEditor, TableCellRenderer {
 
-	private static final long serialVersionUID = -6744877611120460258L;
-	protected static final String EDIT = "e";
-	private JButton button;
-	private EditFrame edit;
-	private Question question;
-
+	private static final long serialVersionUID = -5677136980819247871L;
+	
 	public EditColumn() {
-        button = new JButton(EDIT);
-        button.setFont(new Font("Consolas", Font.PLAIN, 12));
-        button.setOpaque(true);
-        button.setActionCommand(EDIT);
-        button.addActionListener(this);
-        button.setBorderPainted(false);
-        button.setBorder(null);
-    }
-
-	@Override
-	public Object getCellEditorValue() {
-		return question;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-        if (EDIT.equals(e.getActionCommand())) {
-            button.setBackground(Color.cyan);
-        	edit = new EditFrame(this.question);
-    		edit.setVisible(true);
-            fireEditingStopped();
-        }		
-	}
+    }	
 
 	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value,
 			boolean isSelected, int row, int column) {
+		EditButton button = null;
 		try {
-			question = (Question) value;
+			button = (EditButton) value;
 		} catch (ClassCastException e) {
 			return null;
-		}
+		}		
 		return button;
 	}
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
+		EditButton button = null;
 		try {
-			question = (Question) value;
+			button = (EditButton) value;
 		} catch (ClassCastException e) {
 			return null;
-		}
+		}		
 		return button;
+	}
+
+	@Override
+	public Object getCellEditorValue() {
+		return false;
 	}
 }

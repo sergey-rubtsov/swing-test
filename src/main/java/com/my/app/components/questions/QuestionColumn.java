@@ -12,23 +12,15 @@ import com.my.app.domain.Question;
 
 public class QuestionColumn implements TableCellRenderer {
 
-	private Question question;
-	private JList list;
-	private DefaultListModel listModel;
-	
 	public QuestionColumn() {
 	}
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
-		try {
-			question = (Question) value;
-		} catch (ClassCastException e) {
-			return null;
-		}
-		listModel = new DefaultListModel();
-		list = new JList(listModel);
+		Question question = (Question) value;
+		DefaultListModel listModel = new DefaultListModel();
+		JList list = new JList(listModel);
 		list.setFont(new Font("Consolas", Font.PLAIN, 12));
 		list.setCellRenderer(new QuestionsRenderer());
 		listModel.addElement(question);

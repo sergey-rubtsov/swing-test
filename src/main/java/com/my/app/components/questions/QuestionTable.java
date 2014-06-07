@@ -84,11 +84,10 @@ public class QuestionTable extends JTable implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (DELETE.equals(e.getActionCommand())) {
 			DeleteButton button = (DeleteColumn.DeleteButton) e.getSource();
-			questionService.deleteQuestion(button.getQuestion());
-			deleteQuestionFromTable(button.getQuestion());
+			deleteQuestion(button.getQuestion());
 		}
 	}
-
+	
 	@Override
 	public DefaultTableModel getModel() {
 		return model;
@@ -113,10 +112,15 @@ public class QuestionTable extends JTable implements ActionListener {
 	public void setQuestions(List<Question> questions) {		
 		clearTable();		
 		for (final Question question : questions) {
-			Object[] row = { question, question, question };
-			this.getModel().addRow(row);
+			addQuestionRow(question);
 		}
 		this.updateRowHeights();
+	}
+	
+	public void addQuestionRow(Question question) {
+		EditButton button = new EditButton(new EditAction(question));
+		Object[] row = { question, button, question };
+		this.getModel().addRow(row);
 	}
 
 	public void search(String keyword) {		
@@ -134,10 +138,19 @@ public class QuestionTable extends JTable implements ActionListener {
 		}
 	}
 	
-	public void deleteQuestionFromTable(Question q) {
+	public void deleteQuestion(Question q) {
+		deleteQuestionFromDb(q);
+		deleteQuestionFromTable(q);
+	}
+	
+	private void deleteQuestionFromTable(Question q) {
 		questions.remove(q);
 		clearTable();
 		setQuestions(questions);
+	}
+	
+	private void deleteQuestionFromDb(Question q) {
+		questionService.deleteQuestion(q);
 	}
 
 	public void showAll() {

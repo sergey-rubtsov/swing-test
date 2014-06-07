@@ -26,41 +26,23 @@ public class DeleteColumn extends AbstractCellEditor implements
 	int row;
 	private Question question = null;
 
-	public class DeleteButton extends JButton {
+	public class DeleteButton extends TableButton {
 
 		private static final long serialVersionUID = -7455470258663698891L;
 
-		private Question question;
-
-		protected static final String DELETE = "d";
-
-		public DeleteButton(String text) {
-			this();
-			setText(text);
-		}
-
 		public DeleteButton() {
 			super();
-			setText(DELETE);
+			setText(DeleteColumn.DELETE);
 			setFont(new Font("Consolas", Font.PLAIN, 12));
 			setOpaque(true);
-			setActionCommand(DELETE);
+			setActionCommand(DeleteColumn.DELETE);
 			setBorderPainted(false);
 			setBorder(null);
 		}
-
-		public Question getQuestion() {
-			return question;
-		}
-
-		public void setQuestion(Question question) {
-			this.question = question;
-		}
-
 	}
 
 	public DeleteColumn(QuestionTable table) {
-		button = new DeleteButton(DELETE);
+		button = new DeleteButton();
 		button.addActionListener(table);
 		button.addActionListener(this);
 	}
