@@ -26,6 +26,8 @@ public interface QuestionService {
 
     public void deleteQuestion(String id);
 
-	public List<Question> searchQuestion(String keywords);	
+	public List<Question> searchQuestion(String keywords);
+
+	public Question findQuestion(String id);	
 
 }

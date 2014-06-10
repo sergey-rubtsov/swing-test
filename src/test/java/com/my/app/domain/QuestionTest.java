@@ -24,7 +24,7 @@ import java.util.List;
 
 @Configurable
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
+@ContextConfiguration(locations = "classpath:/META-INF/spring/testContext.xml")
 @Transactional
 public class QuestionTest {
 
@@ -73,7 +73,7 @@ public class QuestionTest {
     }
 
     @Test
-    public void testFindAll() throws Exception {
+    public void testFindAll() {
         Question question0 = questionService.saveQuestion(getFirstQuestion());
         Question question1 = questionService.saveQuestion(getSecondQuestion());
         Question question2 = questionService.saveQuestion(getThirdQuestion());
@@ -88,7 +88,7 @@ public class QuestionTest {
     }
 
     @Test
-    public void testFindQuestionsPages() throws Exception {
+    public void testFindQuestionsPages() {
         questionService.saveQuestion(getFirstQuestion());
         questionService.saveQuestion(getSecondQuestion());
         questionService.saveQuestion(getThirdQuestion());
@@ -100,7 +100,7 @@ public class QuestionTest {
     }
     
     @Test
-    public void testFindQuestions() throws Exception {
+    public void testFindQuestions() {
         questionService.saveQuestion(getFirstQuestion());
         questionService.saveQuestion(getSecondQuestion());
         questionService.saveQuestion(getThirdQuestion());
@@ -112,7 +112,7 @@ public class QuestionTest {
     }
 
     @Test
-    public void testOneToMany() throws Exception {
+    public void testOneToMany() {
         Question question = getFirstQuestion();
         question.addAnswer(getFirstAnswer());
         question.addAnswer(getSecondAnswer());
@@ -123,7 +123,7 @@ public class QuestionTest {
     }
 
     @Test
-    public void testSearch() throws Exception {
+    public void testSearch() {
 
     }
 

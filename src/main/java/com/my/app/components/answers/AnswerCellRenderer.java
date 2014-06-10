@@ -10,11 +10,8 @@ import javax.swing.ListCellRenderer;
 import com.my.app.components.EditFrame;
 import com.my.app.domain.Answer;
 
-public class AnswerCellRenderer extends JLabel implements ListCellRenderer {
+public class AnswerCellRenderer implements ListCellRenderer {
 	
-	private static final long serialVersionUID = 3901844984589773667L;
-	
-	private Answer a;
 	private EditFrame frame;
 	
 	public AnswerCellRenderer(EditFrame frame) {
@@ -25,30 +22,20 @@ public class AnswerCellRenderer extends JLabel implements ListCellRenderer {
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
-		a = (Answer) value;		
-		setText(a.getAnswer());		
-		setForeground(getColor(a.getTruth()));
+		AnswerLabel label = (AnswerLabel) value;
 		if (isSelected) {
-			setBackground(Color.RED);
-			setForeground(Color.BLACK);
-			frame.setFocusedAnswer(a);
+			label.setBackground(Color.RED);
+			label.setForeground(Color.BLACK);
+			frame.setFocusedAnswer(label);
 		}
 		if (cellHasFocus) {
-			setBackground(Color.RED);
-			setForeground(Color.BLACK);
-			frame.setFocusedAnswer(a);
+			label.setBackground(Color.RED);
+			label.setForeground(Color.BLACK);
+			frame.setFocusedAnswer(label);
 		}
-		if (a.getAnswer().length() > 150) {
-			setToolTipText(a.getAnswer());
+		if (label.getAnswer().getAnswer().length() > 150) {
+			label.setToolTipText(label.getAnswer().getAnswer());
 		}		
-		return this;
-	}
-	
-	private Color getColor(int truth) {
-		truth = truth * 255 / 100;
-		if (truth > 255) truth = 255;
-		if (truth <= 0) truth = 0;
-		Color color = new Color(255 - truth, truth, 0);
-		return color;
+		return label;
 	}
 }

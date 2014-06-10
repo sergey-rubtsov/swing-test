@@ -1,13 +1,16 @@
 package com.my.app.domain;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * User: Serg
@@ -19,16 +22,23 @@ import java.util.List;
 public class Question implements Serializable {
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     public String id;
 
     @NotNull
-    @Size(min = 0, max = 10000)
-    private String question = "";
-
-    @OneToMany(mappedBy="question", orphanRemoval=true, fetch = FetchType.EAGER)
-    private List<Answer> answers = new ArrayList<Answer>();
+    @Size(min = 0, max = 8191)
+    private String question = "";    
+    
+    //@OneToMany(cascade=CascadeType.ALL, mappedBy="question")
+    
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true, mappedBy="question")
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    private Set<Answer> answers = new HashSet<Answer>();
+    
+    public Set<Answer> getAnswers() {
+        return answers;
+    }    
 
     public Question() {
     }
@@ -49,18 +59,11 @@ public class Question implements Serializable {
         this.question = question;
     }
 
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
+    public void setAnswers(Set<Answer> answers) {
         this.answers = answers;
     }
 
     public void addAnswer(Answer answer) {
         this.answers.add(answer);
-        if (answer.getQuestion() != this) {
-            answer.setQuestion(this);
-        }
     }
 }

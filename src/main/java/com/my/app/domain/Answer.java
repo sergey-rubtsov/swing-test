@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import java.io.Serializable;
 
 /**
@@ -17,17 +18,21 @@ import java.io.Serializable;
 public class Answer implements Serializable {
 
     @Id
-    @GeneratedValue(generator="system-uuid")
+    @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     public String id;
 
     @NotNull
-    @Size(min = 1, max = 10000)
+    @Size(min = 0, max = 8191)
     private String answer = "";
-
-    @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name="QUESTION_ID")
+    
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "QUESTION_ID")
     private Question question;
+
+    public Question getQuestion() {
+        return question;
+    }    
     
     private int truth;
     
@@ -43,15 +48,8 @@ public class Answer implements Serializable {
         this.id = id;
     }
 
-    public Question getQuestion() {
-        return question;
-    }
-
     public void setQuestion(Question question) {
         this.question = question;
-        if (!question.getAnswers().contains(this)) {
-            question.getAnswers().add(this);
-        }
     }
 
     public String getAnswer() {

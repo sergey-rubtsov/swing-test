@@ -1,6 +1,8 @@
 package com.my.app.service;
 
+import com.my.app.domain.Answer;
 import com.my.app.domain.Question;
+import com.my.app.repository.AnswerRepository;
 import com.my.app.repository.QuestionRepository;
 import com.my.app.utils.Paging;
 
@@ -21,6 +23,9 @@ import java.util.List;
 @Transactional
 public class QuestionServiceImpl implements QuestionService {
 
+    @Autowired
+    AnswerRepository answerRepository;
+	
     @Autowired
     QuestionRepository questionRepository;
 
@@ -47,6 +52,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question saveQuestion(Question question) {
+    	for (Answer answer : question.getAnswers()) {
+    		answer.setQuestion(question);
+    		answerRepository.save(answer);
+    	}
         return questionRepository.save(question);
     }
 
@@ -64,5 +73,10 @@ public class QuestionServiceImpl implements QuestionService {
 	public List<Question> searchQuestion(String keywords) {
 		return findQuestionsBySequence(keywords);
 	}
+	
+    @Override
+    public Question findQuestion(String id) {
+        return questionRepository.findOne(id);
+    }
 
 }

@@ -7,7 +7,9 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -31,6 +33,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.my.app.components.answers.AnswerCellRenderer;
+import com.my.app.components.answers.AnswerLabel;
+import com.my.app.components.questions.QuestionTable;
 import com.my.app.domain.Answer;
 import com.my.app.domain.Question;
 import com.my.app.service.AnswerService;
@@ -48,21 +52,30 @@ public class EditFrame extends JFrame {
 	
 	private static final long serialVersionUID = 6218065377745508692L;
 	private Question question;
-	private Answer focusedAnswer;
+	private AnswerLabel focusedAnswer;
 	private JEditorPane editorQuestion;
 	private JEditorPane editorAnswer;
 	private DefaultListModel listModel;
 	private SpinnerNumberModel spinnerModel;
 	private JButton btnAdd;
 	private JButton btnDelete;
+	private EditorState editorState;
+	QuestionTable table;
+	
+	public enum EditorState {
+		CREATE, EDIT
+	}
 	
 	public EditFrame(String text) {
 		this();
+		editorState = EditorState.CREATE;
 		editorQuestion.setText(text);				
 	}
 
-	public EditFrame(Question question) {
+	public EditFrame(Question question, QuestionTable table) {
 		this();
+		this.table = table;
+		editorState = EditorState.EDIT;
 		setQuestion(question);
 	}
 	
@@ -102,11 +115,27 @@ public class EditFrame extends JFrame {
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Question question = getQuestion();
-				if (question.getQuestion() != editorQuestion.getText()) question.setQuestion(editorQuestion.getText());
-				questionService.saveQuestion(question);
-				//TODO: check:
-				for (Answer answer : question.getAnswers()) answerService.saveAnswer(answer);				
+				//TODO: answers edition
+				if (editorState == EditorState.EDIT) {					
+					Question q = getQuestion();
+					q.setQuestion(editorQuestion.getText());
+					List<Answer> newAnswers = getAnswersFromModel();
+					for (Answer a : newAnswers) {
+						a.setQuestion(q);
+						//if (!q.getAnswers().contains(a)) q.addAnswer(a);
+					}
+					HashSet<Answer> set = new HashSet<Answer>(newAnswers);
+					q.setAnswers(set);
+					questionService.saveQuestion(q);					
+				}
+				if (editorState == EditorState.CREATE) {
+					Question q = getQuestion();
+					for (Answer a : getAnswersFromModel()) {
+						q.addAnswer(a);
+					}
+					questionService.saveQuestion(q);
+					//for (Answer answer : getQuestion().getAnswers()) answerService.saveAnswer(answer);
+				}				
 				setVisible(false);
 				dispose();
 			}
@@ -122,19 +151,31 @@ public class EditFrame extends JFrame {
 				JLabel warning = new JLabel();
 				warning.setFont(new Font("Consolas", Font.PLAIN, 14));
 				warning.setForeground(Color.RED);
-				if (getFocusedAnswer() == null) {
-					warning.setText("Do you want delete this QUESTION?");
-					int dialogResult = JOptionPane.showConfirmDialog (null, warning, "Question deleting.", JOptionPane.YES_NO_OPTION);
-					if (dialogResult == JOptionPane.YES_OPTION){
-						if (question != null) questionService.deleteQuestion(getQuestion());
-						setVisible(false);
-						dispose();
+				if (getFocusedAnswer() == null) {					
+					if (editorState == EditorState.EDIT) {
+						warning.setText("Do you want delete this QUESTION?");
+						int dialogResult = JOptionPane.showConfirmDialog (null, warning, "Question deleting.", JOptionPane.YES_NO_OPTION);
+						if (dialogResult == JOptionPane.YES_OPTION){							
+							if (question != null) questionService.deleteQuestion(getQuestion());
+							table.deleteQuestion(getQuestion());
+							setVisible(false);
+							dispose();
+						}
+					}
+					if (editorState == EditorState.CREATE) {
+						//TODO: check
+						warning.setText("You have to select an existing object.");
+						JOptionPane.showMessageDialog(null, warning);
 					}
 				} else {
 					warning.setText("Do you want delete this ANSWER?");
 					int dialogResult = JOptionPane.showConfirmDialog (null, warning, "Answer deleting.", JOptionPane.YES_NO_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION){
-						answerService.deleteAnswer(getFocusedAnswer());
+						//TODO: check
+						if (editorState == EditorState.EDIT) {
+							Answer a = answerService.findAnswer(getFocusedAnswer().getAnswer().getId());
+							if (a != null) answerService.deleteAnswer(getFocusedAnswer().getAnswer());
+						}
 						deleteFocusedAnswer();
 						setFocusedAnswer(null);
 					}					
@@ -175,10 +216,6 @@ public class EditFrame extends JFrame {
 				onChangeValue();
 			}
 		});
-		
-		//editorAnswer.setBounds(10, 118, 302, 34);
-		//panel.add(editorAnswer);
-		
 	
 		JScrollPane aScroller = new JScrollPane(editorAnswer, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		aScroller.setBounds(10, 118, 302, 34);
@@ -204,7 +241,7 @@ public class EditFrame extends JFrame {
 				Answer a = new Answer();
 				a.setAnswer(editorAnswer.getText());
 				a.setTruth((Integer)spinnerModel.getValue());
-				question.addAnswer(a);
+				question.addAnswer(a);				
 				setAnswers(question.getAnswers());
 				editorAnswer.setText("");
 			}
@@ -231,7 +268,9 @@ public class EditFrame extends JFrame {
 	}
 	
 	public Question getQuestion() {
-		if (this.question == null) return createNewQuestion(editorQuestion.getText());
+		if (question == null) { 
+			return createNewQuestion(editorQuestion.getText()); 
+		}
 		return question;
 	}	
 
@@ -244,19 +283,29 @@ public class EditFrame extends JFrame {
 	public List<Answer> getAnswersFromModel() {
 		List<Answer> answers = new ArrayList<Answer>();
 		for (int i = 0; i < listModel.getSize(); i++) {
-			answers.add((Answer) this.listModel.get(i));
+			AnswerLabel label = (AnswerLabel) this.listModel.get(i);
+			answers.add(label.getAnswer());
 		}
 		return answers;
 	}
 	
-	public void setAnswers(List<Answer> answers) {
+	public void setAnswers(List<Answer> answers) {		
 		this.listModel.clear();
 		for (Answer answer : answers) {
-			this.listModel.addElement(answer);
+			AnswerLabel answerLabel = new AnswerLabel(answer);
+			this.listModel.addElement(answerLabel);
+		}
+	}
+	
+	public void setAnswers(Set<Answer> answers) {		
+		this.listModel.clear();
+		for (Answer answer : answers) {
+			AnswerLabel answerLabel = new AnswerLabel(answer);
+			this.listModel.addElement(answerLabel);
 		}
 	}
 
-	public void setFocusedAnswer(Answer a) {
+	public void setFocusedAnswer(AnswerLabel a) {
 		focusedAnswer = a;		
 	}
 	
@@ -264,7 +313,16 @@ public class EditFrame extends JFrame {
 		this.listModel.removeElement(getFocusedAnswer());
 	}
 	
-	public Answer getFocusedAnswer() {
+	public AnswerLabel getFocusedAnswer() {
 		return focusedAnswer;
 	}
+
+	public EditorState getEditorState() {
+		return editorState;
+	}
+
+	public void setEditorState(EditorState editorState) {
+		this.editorState = editorState;
+	}
+	
 }

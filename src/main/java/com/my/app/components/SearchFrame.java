@@ -51,7 +51,7 @@ public class SearchFrame extends JFrame {
 	
 	public SearchFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 540, 380);
+		setBounds(100, 100, 680, 420);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -124,7 +124,7 @@ public class SearchFrame extends JFrame {
 		contentPane.add(panelBottom, BorderLayout.SOUTH);
 		table = new QuestionTable();
 		JScrollPane scroller = new JScrollPane(table);
-		scroller.setPreferredSize(new Dimension(520, 260));	
+		scroller.setPreferredSize(new Dimension(636, 300));	
 		panelBottom.add(scroller);
 		
 		textField.getDocument().addDocumentListener(new DocumentListener() {			

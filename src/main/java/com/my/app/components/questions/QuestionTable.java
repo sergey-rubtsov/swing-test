@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.my.app.components.questions.DeleteColumn.DeleteButton;
-import com.my.app.domain.Answer;
 import com.my.app.domain.Question;
 import com.my.app.service.AnswerService;
 import com.my.app.service.QuestionService;
@@ -72,20 +70,12 @@ public class QuestionTable extends JTable implements ActionListener {
 		column1.setCellEditor(editor);
 		column1.setCellRenderer(editor);
 		TableColumn column2 = getColumnModel().getColumn(2);
-		DeleteColumn deleter = new DeleteColumn(this);
+		DeleteColumn deleter = new DeleteColumn();
 		column2.setCellEditor(deleter);
 		column2.setCellRenderer(deleter);
 		column2.setMinWidth(24);
 		column2.setMaxWidth(24);
 		column2.setPreferredWidth(24);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (DELETE.equals(e.getActionCommand())) {
-			DeleteButton button = (DeleteColumn.DeleteButton) e.getSource();
-			deleteQuestion(button.getQuestion());
-		}
 	}
 	
 	@Override
@@ -118,8 +108,9 @@ public class QuestionTable extends JTable implements ActionListener {
 	}
 	
 	public void addQuestionRow(Question question) {
-		EditButton button = new EditButton(new EditAction(question));
-		Object[] row = { question, button, question };
+		EditButton editButton = new EditButton(new EditAction(question, this));
+		DeleteButton deleteButton = new DeleteButton(new DeleteAction(question, this));
+		Object[] row = { question, editButton, deleteButton };
 		this.getModel().addRow(row);
 	}
 
@@ -157,4 +148,24 @@ public class QuestionTable extends JTable implements ActionListener {
 		questions = questionService.findAllQuestions();
 		setQuestions(questions);		
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		ActionEvent event = e;
+		if (DELETE.equals(e.getActionCommand())) {}
+		
+	}
+	
+/*	private void rowDelete(int row) {
+		try {
+			if (getCellEditor() != null)
+				getCellEditor().stopCellEditing();
+			if ((row >= 0) && (getRowCount() > 1)) {
+				DefaultTableModel tm = getModel();
+				tm.removeRow(row);
+				repaint();
+			}
+		} catch (Exception tableEx) {
+		}
+	}*/
 }

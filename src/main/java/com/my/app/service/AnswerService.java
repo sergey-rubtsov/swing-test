@@ -13,5 +13,7 @@ public interface AnswerService {
     public Answer saveAnswer(Answer answer);
 
     public void deleteAnswer(Answer answer);
+    
+    public Answer findAnswer(String id);
 
 }
