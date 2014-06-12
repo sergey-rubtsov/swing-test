@@ -95,7 +95,7 @@ public class SearchFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				EditFrame edit = new EditFrame(textField.getText());
-				textField.setText("");
+				clearSearchField();
 				edit.setVisible(true);
 			}
 		});
@@ -105,7 +105,7 @@ public class SearchFrame extends JFrame {
 		btnClear.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textField.setText("");			
+				clearSearchField();			
 			}
 		});
 		panelTop.add(btnClear);		
@@ -143,6 +143,10 @@ public class SearchFrame extends JFrame {
 				onChangeValue();
 			}
 		});
+	}
+	
+	public void clearSearchField() {
+		textField.setText("");
 	}
 	
 	private void exportDB() {

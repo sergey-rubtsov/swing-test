@@ -3,6 +3,11 @@ package com.my.app.domain;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Store;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,6 +24,7 @@ import java.util.Set;
  */
 
 @Entity
+@Indexed
 public class Question implements Serializable {
 
     @Id
@@ -28,9 +34,8 @@ public class Question implements Serializable {
 
     @NotNull
     @Size(min = 0, max = 8191)
+    @Field(index=Index.YES, analyze=Analyze.YES, store=Store.NO)
     private String question = "";    
-    
-    //@OneToMany(cascade=CascadeType.ALL, mappedBy="question")
     
     @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true, mappedBy="question")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
