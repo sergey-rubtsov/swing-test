@@ -1,9 +1,8 @@
 package com.my.app.repository;
 
 import com.my.app.domain.Question;
-
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
  */
 
 @Repository
-public interface QuestionRepository extends CrudRepository<Question, String> {
+public interface QuestionRepository extends JpaRepository<Question, String> {
     List<Question> findByQuestionLike(String question, Pageable pageable);
     List<Question> findByQuestionLike(String question);
 }

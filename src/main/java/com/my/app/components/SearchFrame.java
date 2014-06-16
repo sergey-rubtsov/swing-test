@@ -43,12 +43,6 @@ public class SearchFrame extends JFrame {
 	private JButton btnClear;
 	private QuestionTable table;
 	
-    @Autowired
-    QuestionService questionService;
-    
-    @Autowired
-    AnswerService answerService;
-	
 	public SearchFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 680, 420);

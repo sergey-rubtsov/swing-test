@@ -1,6 +1,11 @@
 package com.my.app.repository;
 
+import java.util.List;
+
 import com.my.app.domain.Answer;
+import com.my.app.domain.Question;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +16,6 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface AnswerRepository extends CrudRepository<Answer, String> {
+public interface AnswerRepository extends JpaRepository<Answer, String> {
+	List<Answer> findByAnswerLike(String question);
 }

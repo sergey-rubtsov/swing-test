@@ -123,8 +123,45 @@ public class QuestionTest {
     }
 
     @Test
-    public void testSearch() {
-
+    public void testSearchQuestionService() {
+        Question question0 = getFirstQuestion();
+        question0.addAnswer(getFirstAnswer());
+        Question question1 = getSecondQuestion();
+        question1.addAnswer(getFirstAnswer());
+        question1.addAnswer(getSecondAnswer());
+        question1.addAnswer(getThirdAnswer());
+        questionService.saveQuestion(question0);
+        questionService.saveQuestion(question1);
+        
+        List<Question> list = questionService.searchQuestionByAnswer("No");
+        Assert.assertEquals(list.size(), 1);
+        Question testQ = list.get(0);
+        Assert.assertEquals(testQ.getId(), question1.getId());
+        Assert.assertEquals(testQ.getQuestion(), question1.getQuestion());
+    }
+    
+    @Test
+    public void testSearchQuestionByAnswer() {
+    	
+    }
+    
+    @Test
+    public void testFullTextSearch() {
+        Question question0 = getFirstQuestion();
+        question0.addAnswer(getFirstAnswer());
+        Question question1 = getSecondQuestion();
+        question1.addAnswer(getFirstAnswer());
+        question1.addAnswer(getSecondAnswer());
+        question1.addAnswer(getThirdAnswer());
+        
+        questionService.saveQuestion(question0);
+        questionService.saveQuestion(question1);        
+       
+        List<Question> list = questionService.fullTextSearch("o");
+        Assert.assertEquals(list.size(), 1);
+        Question testQ = list.get(0);
+        Assert.assertEquals(testQ.getId(), question1.getId());
+        Assert.assertEquals(testQ.getQuestion(), question1.getQuestion());
     }
 
     private Question getFirstQuestion() {

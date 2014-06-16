@@ -1,8 +1,13 @@
 package com.my.app.domain;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Field;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -24,9 +29,10 @@ public class Answer implements Serializable {
 
     @NotNull
     @Size(min = 0, max = 8191)
+    @Field
     private String answer = "";
     
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "QUESTION_ID")
     private Question question;
 
@@ -36,8 +42,7 @@ public class Answer implements Serializable {
     
     private int truth;
     
-    public Answer() {
-    	
+    public Answer() {    	
     }
     
     public String getId() {

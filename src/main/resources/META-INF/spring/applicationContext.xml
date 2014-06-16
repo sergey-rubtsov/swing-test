@@ -63,7 +63,7 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="dataunit"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="jpaVendorAdapter">

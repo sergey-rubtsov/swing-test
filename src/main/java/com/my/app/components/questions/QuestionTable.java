@@ -116,6 +116,7 @@ public class QuestionTable extends JTable implements ActionListener {
 
 	public void search(String keyword) {		
 		questions = questionService.searchQuestion(keyword);
+		questions.addAll(questionService.searchQuestionByAnswer(keyword));
 		if (questions.size() > 0) {
 			setQuestions(questions);
 		} else clearTable();
