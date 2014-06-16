@@ -60,11 +60,6 @@ public class QuestionColumn implements TableCellRenderer {
 		}
 		if (hasFocus) {
 			showQuestionInfo(question);
-/*			JLabel qInfo = new JLabel();
-			qInfo.setFont(new Font("Consolas", Font.PLAIN, 14));
-			qInfo.setForeground(Color.BLACK);
-			qInfo.setText(question.getQuestion());
-			JOptionPane.showMessageDialog(null, qInfo);*/
 		}
 		return list;
 	}
