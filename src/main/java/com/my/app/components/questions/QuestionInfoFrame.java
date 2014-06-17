@@ -37,7 +37,7 @@ public class QuestionInfoFrame extends JFrame {
 		String text = "";
 		text = text + q.getQuestion() + "\n\n";		
 		for (Answer a : q.getAnswers()) {
-			text = text + a.getAnswer() + "\n"; 
+			text = text + " [" + a.getTruth() + "] " + a.getAnswer() + "\n"; 
 		}
 		textPane.setText(text);
 	}
