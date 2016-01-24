@@ -1,4 +1,5 @@
 ##Test swing application.
+Also uses Spring, Hibernate and JUnit
 
 You can:<br/>
 1) quick add new Questions and related Answers<br/>
